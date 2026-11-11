@@ -36,13 +36,13 @@ test("recorre lectura, mapeo y paquete, y exige confirmación para el envío", a
   ]);
   const session = sessions.get("s", 100000);
   const first = await runTurn(session, "Procesa el caso ec-corp-andina", { adapter, specs: toolSpecs, maxIterations: 10, context: { directory, sessionId: "s", today: "2026-11-10" }, prompt: "test" });
-  assert.equal(first.needsConfirmation, true);
-  assert.equal(session.state.pendingCase, "ec-corp-andina");
+  assert.equal(first.needsConfirmation, false);
+  assert.equal(session.state.pendingCase, null);
   const denied = await runTurn(session, "No confirmo el envío", { adapter, specs: toolSpecs, maxIterations: 10, context: { directory, sessionId: "s", today: "2026-11-10" }, prompt: "test" });
   assert.equal(JSON.stringify(denied.toolCalls).includes("ENVIO-SIMULADO"), false);
   assert.equal(session.state.pendingCase, null);
 
-  const yes = await runTurn(sessions.get("s2", 100000), "Procesa el caso ec-corp-andina", {
+  const yes = await runTurn(sessions.get("s2", 100000), "Prepara el envío simulado del caso ec-corp-andina", {
     adapter: new ScriptedAdapter([call("a1", "proveedor_armar_paquete", { caso: "ec-corp-andina" }), { content: "¿Confirmas el envío simulado para ec-corp-andina?", toolCalls: [], usage: { promptTokens: 1, completionTokens: 1, totalTokens: 2 } }]),
     specs: toolSpecs, maxIterations: 5, context: { directory, sessionId: "s2", today: "2026-11-10" }, prompt: "test"
   });

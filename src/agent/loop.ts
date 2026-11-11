@@ -12,6 +12,8 @@ export type TurnResult = { reply: string; toolCalls: { name: string; args: Recor
 type LoopOptions = { adapter: LlmAdapter; specs: ToolSpec[]; maxIterations: number; context: Omit<ToolContext, "authorizedCase">; prompt: string };
 const confirmationPattern = /confirma|confirmas|¿envío|¿procedo|aprueba|autoriza/i;
 const affirmativePattern = /^(si|sí|confirmo|autorizo|apruebo)(?:\s|[,.!;:]|$)/i;
+const outboundRequestPattern = /(?:\benviar\b|\benvía\b|\benvie\b|\bsimular\s+envío\b|\bsimula\s+el\s+envío\b|\bprepar(?:a|ar)\s+el\s+envío\b)/i;
+const outboundNegationPattern = /(?:\bno\s+(?:me\s+)?(?:envíes|enviar|envíe|simules|simular|prepares|preparar)\b|\bsin\s+enviar\b)/i;
 const reserveTokens = 8192;
 
 export async function runTurn(session: Session, message: string, options: LoopOptions): Promise<TurnResult> {
@@ -61,7 +63,8 @@ export async function runTurn(session: Session, message: string, options: LoopOp
     }
 
     if (confirmed && pendingCase) consumeConfirmation(session.state, pendingCase);
-    const needsConfirmation = !truncated && !attemptedOtherCase && confirmationPattern.test(reply) && Boolean(caseForConfirmation);
+    const userRequestedOutbound = outboundRequestPattern.test(message) && !outboundNegationPattern.test(message);
+    const needsConfirmation = !truncated && !attemptedOtherCase && userRequestedOutbound && confirmationPattern.test(reply) && Boolean(caseForConfirmation);
     if (needsConfirmation && caseForConfirmation) openConfirmation(session.state, caseForConfirmation, "simular_envio");
     if (!reply) reply = truncated ? "Alcancé el límite de iteraciones de este turno." : "No obtuve una respuesta del modelo.";
     addEntry(session, "assistant", reply, toolCalls);
