@@ -97,7 +97,7 @@ function allow(hits: Map<string, { count: number; reset: number }>, key: string,
 export async function startServer(directory: string): Promise<Server> {
   const server = await createApp(directory);
   const port = loadConfig().PORT;
-  await new Promise<void>((resolve) => server.listen(port, resolve));
+  await new Promise<void>((resolve) => server.listen(port, "0.0.0.0", resolve));
   console.log(`registro-proveedor local en puerto ${port}`);
   return server;
 }
