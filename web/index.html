@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registro como proveedor</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section id="access" class="access" hidden>
+        <form id="access-form">
+          <label for="access-token">Clave de acceso</label>
+          <input id="access-token" type="password" autocomplete="current-password" required>
+          <button type="submit">Ingresar</button>
+          <p id="access-error" role="alert"></p>
+        </form>
+      </section>
+      <div id="app-content">
+      <header>
+        <p class="eyebrow">PERIFERIA IT GROUP</p>
+        <h1>Registro como proveedor</h1>
+        <p class="subtitle">Prepara formularios y soportes. La firma y el envío permanecen bajo control humano.</p>
+      </header>
+      <section id="history" class="history" aria-live="polite" aria-label="Historial de conversación">
+        <article class="message assistant"><strong>Asistente</strong><p>Indica un caso, por ejemplo: <code>Procesa el caso "ec-corp-andina". No envíes nada.</code></p></article>
+      </section>
+      <section id="confirmation" class="confirmation" hidden>
+        <strong>Confirmación requerida</strong>
+        <p>El agente solicita tu aprobación explícita antes de simular un envío.</p>
+        <div><button id="confirm" type="button">Confirmar</button><button id="reject" class="secondary" type="button">Rechazar</button></div>
+      </section>
+      <section id="artifacts" class="artifacts" aria-label="Archivos generados" hidden>
+        <strong>Archivos generados</strong>
+        <ul id="artifact-list"></ul>
+      </section>
+      <form id="chat-form" class="composer">
+        <label for="message">Mensaje</label>
+        <textarea id="message" rows="3" required aria-label="Mensaje para el asistente" placeholder="Procesa el caso &quot;ec-corp-andina&quot;."></textarea>
+        <div class="actions"><span id="status" role="status"></span><button id="send" type="submit">Enviar</button></div>
+      </form>
+      </div>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
